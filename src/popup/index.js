@@ -3,9 +3,9 @@ import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
 import { useState } from "react";
 
-function PopUp() {
-  const curr = "Add schema to segment";
-  const [selected, setSelected] = useState([curr]);
+function PopUp({exit}) {
+  const placeholder = "Add schema to segment";
+  const [selected, setSelected] = useState([placeholder]);
   const schemas = [
     "Add schema to segment",
     "First Name",
@@ -36,8 +36,33 @@ function PopUp() {
     });
   };
 
+  const toSnakeCase = (str = '') => {
+    const strArr = str.split(' ');
+    const snakeArr = strArr.reduce((acc, val) => {
+       return acc.concat(val.toLowerCase());
+    }, []);
+    return snakeArr.join('_');
+ };
+
+  const save = ()=> {
+    if (selected[selected.length-1] == placeholder){
+      selected.pop()
+    }
+    // const temp = selected.map(each=> toSnakeCase(each))
+    const map= {}
+    selected.forEach(each=> map[toSnakeCase(each)] = each)
+    console.log(map)
+  }
+
   return (
     <div className="App">
+      <div>
+        <h1>Save Segment  </h1>
+      </div>
+      <div>
+        <h2>Enter the name of the segment:</h2>
+        <input type="text" name="name" placeholder="Name of the segment"/>
+      </div>
       {selected.map((each, i) => {
         return (
           <Dropdown
@@ -46,16 +71,21 @@ function PopUp() {
             value={each}
             key={i}
           />
+  
         );
       })}
       {schemas.length - 1 != selected.length && (
         <button
           onClick={buttonClick}
-          disabled={curr == selected[selected.length - 1]}
+          disabled={placeholder == selected[selected.length - 1]}
         >
           add new schema
         </button>
       )}
+      <div className="bottom">
+        <button onClick={save}>Save the segment</button>
+        <button onClick={exit}>Cancel</button>
+      </div>
     </div>
   );
 }
