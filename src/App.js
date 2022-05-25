@@ -8,7 +8,6 @@ function App() {
   return (
     <div id="fullscreen">
       <div className="TopDiv">
-        IoIosArrowBack
       </div>
       <div className="toggle">
         <button onClick={() => setpopupWindow(!popupWindow)}>

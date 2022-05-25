@@ -1,11 +1,14 @@
 import "./style.css";
 import Dropdown from "react-dropdown";
 import "react-dropdown/style.css";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import axios from "axios";
 
 function PopUp({exit}) {
+  
   const placeholder = "Add schema to segment";
   const [selected, setSelected] = useState([placeholder]);
+  const inputRef = useRef("")
   const schemas = [
     "Add schema to segment",
     "First Name",
@@ -25,7 +28,6 @@ function PopUp({exit}) {
   };
 
   const getNonSelected = () => {
-    console.log(schemas.filter((val) => !selected.includes(val)));
     return schemas.filter((val) => !selected.includes(val));
   };
 
@@ -48,10 +50,16 @@ function PopUp({exit}) {
     if (selected[selected.length-1] == placeholder){
       selected.pop()
     }
-    // const temp = selected.map(each=> toSnakeCase(each))
-    const map= {}
-    selected.forEach(each=> map[toSnakeCase(each)] = each)
-    console.log(map)
+    const map= {
+      "segment_name": inputRef.current.value,
+      "schema": []
+    }
+    selected.forEach(each=> map.schema.push({[toSnakeCase(each)] :each}))
+    axios({
+      method: 'post',
+      url: 'https://webhook.site/6af10dc7-e805-48a5-a2ff-e21a2ca0c8c5',
+      data: map
+    }).then(console.log).catch(console.log)
   }
 
   return (
@@ -61,7 +69,7 @@ function PopUp({exit}) {
       </div>
       <div>
         <h2>Enter the name of the segment:</h2>
-        <input type="text" name="name" placeholder="Name of the segment"/>
+        <input type="text" name="name" placeholder="Name of the segment" ref={inputRef}/>
       </div>
       {selected.map((each, i) => {
         return (
